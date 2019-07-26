@@ -1,0 +1,8 @@
+sonata_core:
+    form:
+        mapping:
+            enabled: false
+sonata_user:
+    class:
+        user:               App\Application\Sonata\UserBundle\Entity\User
+        group:              App\Application\Sonata\UserBundle\Entity\Group
