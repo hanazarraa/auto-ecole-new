@@ -1,10 +1,32 @@
 security:
+    
     encoders:
         FOS\UserBundle\Model\UserInterface: bcrypt
-
+    
     role_hierarchy:
-        ROLE_ADMIN:       ROLE_USER
-        ROLE_SUPER_ADMIN: ROLE_ADMIN
+        # for convenience, I decided to gather Sonata roles here
+        ROLE_SONATA_FOO_READER:
+            - ROLE_SONATA_ADMIN_DEMO_FOO_LIST
+            - ROLE_SONATA_ADMIN_DEMO_FOO_VIEW
+        ROLE_SONATA_FOO_EDITOR:
+            - ROLE_SONATA_ADMIN_DEMO_FOO_CREATE
+            - ROLE_SONATA_ADMIN_DEMO_FOO_EDIT
+        ROLE_SONATA_FOO_ADMIN:
+            - ROLE_SONATA_ADMIN_DEMO_FOO_DELETE
+            - ROLE_SONATA_ADMIN_DEMO_FOO_EXPORT
+
+        # those are the roles I will use (less verbose)
+        ROLE_SECRETAIRE:         [ROLE_USER, ROLE_SONATA_FOO_READER,ROLE_SONATA_FOO_EDITOR]
+        ROLE_CANDIDAT:           [ROLE_USER,ROLE_SONATA_FOO_READER]
+        ROLE_MONITEUR:           [ROLE_SECRETAIRE]
+        ROLE_SUPER_ADMIN:        [ROLE_SECRETAIRE,ROLE_SONATA_FOO_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+        # you could alternatively use for an admin who has all rights
+        ROLE_ALL_ADMIN:         [ROLE_STAFF, ROLE_SONATA_FOO_ALL]
+
+    # set access_strategy to unanimous, else you may have unexpected behaviors
+    access_decision_manager:
+        strategy: unanimous
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
@@ -45,7 +67,7 @@ security:
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
             # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+             #switch_user: true
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
@@ -59,5 +81,6 @@ security:
         # Secured part of the site
         # This config requires being logged for the whole site and having the admin role for the admin part.
         # Change these rules to adapt them to your needs
-        - { path: ^/admin/, role: [ROLE_ADMIN, ROLE_SONATA_ADMIN] }
+        - { path: ^/admin/, role: [ROLE_SUPER_ADMIN] }
         - { path: ^/.*, role: IS_AUTHENTICATED_ANONYMOUSLY }
+       
