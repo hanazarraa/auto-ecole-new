@@ -1,6 +1,5 @@
 <?php
 namespace App\Admin;
-
 use App\Entity\Category;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -72,8 +71,8 @@ final class CandidatAdmin extends AbstractAdmin
             ->add('ImageName')
             ->add('ImageFile')
             ->add('category');
+          //  $info = new SplFileInfo('/..//./../../'.__FILE__);
     }
-
-
+   
 
 }

@@ -2,7 +2,11 @@
 
 namespace App\Application\Sonata\UserBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
-
+use Sonata\AdminBundle\Util\ObjectAclManipulatorInterface;
+use Sonata\AdminBundle\Admin\AdminInterface;
+use Sonata\AdminBundle\Exception\ModelManagerException;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 //use FOS\UserBundle\Model\User as BaseUser;
 use Sonata\UserBundle\Entity\BaseUser as BaseUser;
 use Sonata\UserBundle\Model\UserInterface;
@@ -14,7 +18,7 @@ use Sonata\UserBundle\Model\UserInterface;
  * References:
  * @link http://www.doctrine-project.org/projects/orm/2.0/docs/reference/working-with-objects/en
  */
-class User extends BaseUser
+class User extends BaseUser implements ObjectAclManipulatorInterface
 {
    /**
      * @ORM\Id
@@ -28,6 +32,7 @@ class User extends BaseUser
     {
         return $this->id;
     }
+   
     public static function getGenderList()
 {
     return array(
@@ -62,5 +67,9 @@ class User extends BaseUser
      * @return string
      */
    
-    
+    public function batchConfigureAcls(
+        OutputInterface $output,
+        AdminInterface $admin,
+        UserSecurityIdentity $securityIdentity = null
+    ){}
 }

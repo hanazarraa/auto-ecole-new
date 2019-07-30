@@ -1,15 +1,18 @@
 <?php
 
 namespace App\Entity;
-
+use Sonata\AdminBundle\Admin\AdminInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Sonata\AdminBundle\Util\ObjectAclManipulatorInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
  */
-class Category
+class Category implements ObjectAclManipulatorInterface
 {
     /**
      * @ORM\Id()
@@ -80,4 +83,9 @@ class Category
 
         return $this;
     }
+    public function batchConfigureAcls(
+        OutputInterface $output,
+        AdminInterface $admin,
+        UserSecurityIdentity $securityIdentity = null
+    ){}
 }

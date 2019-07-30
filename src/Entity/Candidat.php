@@ -6,14 +6,18 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Entity\File as EmbeddedFile;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-
+use Sonata\AdminBundle\Util\ObjectAclManipulatorInterface;
+use Sonata\AdminBundle\Admin\AdminInterface;
+use Sonata\AdminBundle\Exception\ModelManagerException;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 
 /**
  * @ORM\Entity
  * @Vich\Uploadable
  */
 
-class Candidat
+class Candidat implements ObjectAclManipulatorInterface
 {
     const TYPEPERMIT = [
         1 => 'A1',
@@ -317,4 +321,9 @@ class Candidat
     {
         $this->category = $category;
     }
+    public function batchConfigureAcls(
+        OutputInterface $output,
+        AdminInterface $admin,
+        UserSecurityIdentity $securityIdentity = null
+    ){}
 }
