@@ -17,7 +17,7 @@ use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
  * @Vich\Uploadable
  */
 
-class Candidat implements ObjectAclManipulatorInterface
+class Candidat
 {
     const TYPEPERMIT = [
         1 => 'A1',
@@ -124,7 +124,18 @@ class Candidat implements ObjectAclManipulatorInterface
      * @ORM\Column(type="integer",nullable=true)
      */
     private $typePermit;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="candidats")
+     */
     private $category;
+
+    
+
+   
+
+
+
 
     /**
      * @return string
@@ -306,24 +317,19 @@ class Candidat implements ObjectAclManipulatorInterface
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCategory()
+    public function getCategory(): ?Category
     {
         return $this->category;
     }
 
-    /**
-     * @param mixed $category
-     */
-    public function setCategory($category): void
+    public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
     }
-    public function batchConfigureAcls(
-        OutputInterface $output,
-        AdminInterface $admin,
-        UserSecurityIdentity $securityIdentity = null
-    ){}
+
+
+
+
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -7,13 +6,17 @@ use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
+
 use Sonata\AdminBundle\Util\ObjectAclManipulatorInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
  */
-class Category implements ObjectAclManipulatorInterface
+class Category 
+
 {
+// ...
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -22,70 +25,142 @@ class Category implements ObjectAclManipulatorInterface
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string")
      */
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\BlogPost", mappedBy="category")
+     * @ORM\OneToMany(targetEntity="App\Entity\Moniteur", mappedBy="category")
      */
-    private $blogPosts;
+    private $moniteurs;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Candidat", mappedBy="Category")
+     */
+    private $candidats;
+
+    
 
     public function __construct()
     {
-        $this->blogPosts = new ArrayCollection();
+        $this->moniteurs = new ArrayCollection();
+        $this->candidats = new ArrayCollection();
     }
 
-    public function getId(): ?int
+
+    public function getCategory()
     {
-        return $this->id;
+        return $this->category;
     }
 
-    public function getName(): ?string
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getName()
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
-    {
-        $this->name = $name;
 
-        return $this;
+
+
+
+
+
+
+   
+
+
+    public function __toString()
+    {
+        return $this->name;
     }
 
     /**
-     * @return Collection|BlogPost[]
+     * @return Collection|Moniteurs[]
      */
-    public function getBlogPosts(): Collection
+   /* public function getMoniteur(): Collection
     {
-        return $this->blogPosts;
+        return $this->moniteur;
     }
 
-    public function addBlogPost(BlogPost $blogPost): self
+    public function addMoniteur(Moniteurs $moniteur): self
     {
-        if (!$this->blogPosts->contains($blogPost)) {
-            $this->blogPosts[] = $blogPost;
-            $blogPost->setCategory($this);
+        if (!$this->moniteur->contains($moniteur)) {
+            $this->moniteur[] = $moniteur;
+            $moniteur->setCategory($this);
         }
 
         return $this;
     }
 
-    public function removeBlogPost(BlogPost $blogPost): self
+    public function removeMoniteur(Moniteurs $moniteur): self
     {
-        if ($this->blogPosts->contains($blogPost)) {
-            $this->blogPosts->removeElement($blogPost);
+        if ($this->moniteur->contains($moniteur)) {
+            $this->moniteur->removeElement($moniteur);
             // set the owning side to null (unless already changed)
-            if ($blogPost->getCategory() === $this) {
-                $blogPost->setCategory(null);
+            if ($moniteur->getCategory() === $this) {
+                $moniteur->setCategory(null);
             }
         }
 
         return $this;
+    }*/
+
+    /**
+     * @return Collection|Candidat[]
+     */
+   /* public function getCandidat(): Collection
+    {
+        return $this->candidat;
     }
-    public function batchConfigureAcls(
-        OutputInterface $output,
-        AdminInterface $admin,
-        UserSecurityIdentity $securityIdentity = null
-    ){}
+*/
+   /* public function addCandidat(Candidat $candidat): self
+    {
+        if (!$this->candidat->contains($candidat)) {
+            $this->candidat[] = $candidat;
+            $candidat->setCategory($this);
+        }
+
+        return $this;
+    }*/
+
+   /* public function removeCandidat(Candidat $candidat): self
+    {
+        if ($this->candidat->contains($candidat)) {
+            $this->candidat->removeElement($candidat);
+            // set the owning side to null (unless already changed)
+            if ($candidat->getCategory() === $this) {
+                $candidat->setCategory(null);
+            }
+        }
+
+        return $this;
+    }*/
+
+    /**
+     * @return Collection|Candidat[]
+     */
+ /*   public function getCandidats(): Collection
+    {
+        return $this->candidats;
+    }*/
 }
+

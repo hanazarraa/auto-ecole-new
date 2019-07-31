@@ -36,17 +36,13 @@ final class CandidatAdmin extends AbstractAdmin
             ->add('codePostal', TextType::class)
             ->add('ville', TextType::class)
             ->add('telephone', TextType::class)
-            ->add('ImageFile', FileType::class, ['required' => true])
-            ->end();
-            
-
-            /*->with('Meta data',['class'=> 'col-md-3'])
-            ->add('category',EntityType::class,[
-                'class' =>category::class,
+            ->add('Category',EntityType::class,[
+                'class' =>Category::class,
                 'choice_label'=>'name',
             ])
-            //->add('ImageFile', FileType::class, ['required' => true])
-            ->end()*/;
+
+            ->add('ImageFile', FileType::class, ['required' => true])
+            ->end();
 
     }
 
@@ -68,10 +64,11 @@ final class CandidatAdmin extends AbstractAdmin
             ->addIdentifier('telephone')
             ->addIdentifier('dateNaissance')
             ->addIdentifier('category.name')
+            ->addIdentifier('Category')
             ->add('ImageName')
             ->add('ImageFile')
-            ->add('category');
-          //  $info = new SplFileInfo('/..//./../../'.__FILE__);
+            ;
+
     }
    
 

@@ -5,6 +5,9 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 
 services:
+    admin_success_handler:
+        class: Sonata\UserBundle\Services
+        arguments: [ '@service_container' ]
     security.acl.permission.map:
       class: Sonata\AdminBundle\Security\Acl\Permission\AdminPermissionMap
     
@@ -12,12 +15,17 @@ services:
         class: App\Admin\CandidatAdmin
         arguments: [~, App\Entity\Candidat, ~]
         tags:
-            - { name: sonata.admin, manager_type: orm, label: 'candidat' }
+            - { name: sonata.admin, manager_type: orm, label: candidat }
     admin.category:
         class: App\Admin\CategoryAdmin
         arguments: [~, App\Entity\Category, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: Category }
+    admin.moniteur:
+        class: App\Admin\MoniteurAdmin
+        arguments: [~, App\Entity\Moniteur, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Moniteur }
     # default configuration for services in *this* file
     
     _defaults:
