@@ -1,6 +1,6 @@
 <?php
 namespace App\Entity;
-
+use App\Application\Sonata\UserBundle\Entity\User as User;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Entity\File as EmbeddedFile;
@@ -11,7 +11,8 @@ use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Exception\ModelManagerException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
-
+use Sonata\UserBundle\Model\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @Vich\Uploadable
@@ -19,29 +20,16 @@ use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 
 class Candidat
 {
-    const TYPEPERMIT = [
-        1 => 'A1',
-        2 => 'A',
-        3 => 'B',
-        4 => 'B+E',
-        5 => 'C',
-        6 => 'C+E',
-        7 => 'D',
-        8 => 'D1',
-        9 => 'D+E',
-        10 =>'H'
-
-    ];
+    
 // ...
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()SSS
+     * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
-
-
+  
     /**
      * @return mixed
      */
@@ -49,47 +37,28 @@ class Candidat
     {
         return $this->id;
     }
+   
+   
+   
+    
     /**
      * @var string
-     *
-     * @ORM\Column(name="nom", type="string",nullable=true)
+     * @ORM\Column(name="address", type="string",nullable=true)
      */
-    private $nom;
+    private $address;
     /**
      * @var string
-     * @ORM\Column(name="prenom", type="string",nullable=true)
+     * @ORM\Column(name="city", type="string",nullable=true)
      */
-    private $prenom;
+    private $city;
+    
     /**
      * @var int
-     * @ORM\Column(name="cin",nullable=true)
+     * @ORM\Column(name="postalcode",nullable=true)
      */
-    private $cin;
-    /**
-     * @var string
-     * @ORM\Column(name="adresse", type="string",nullable=true)
-     */
-    private $adresse;
-    /**
-     * @var string
-     * @ORM\Column(name="ville", type="string",nullable=true)
-     */
-    private $ville;
-    /**
-     * @var int
-     * @ORM\Column(name="telephone",nullable=true)
-     */
-    private $telephone;
-    /**
-     * @var int
-     * @ORM\Column(name="codePostal",nullable=true)
-     */
-    private $codePostal;
+    private $postalcode;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     */
-    private $dateNaissance;
+   
     /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      *
@@ -113,13 +82,7 @@ class Candidat
      */
     private $imageSize;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     *
-     * @var \DateTime
-     */
-    private $updatedAt;
-
+    
     /**
      * @ORM\Column(type="integer",nullable=true)
      */
@@ -130,135 +93,136 @@ class Candidat
      */
     private $category;
 
+   
+    /**
+     * @ORM\Column(type="string", length=8,name="cin")
+     * /
+     
+      */
+      /** 
+     * @Assert\Length(
+     *      min = 8,
+     *      max = 8,
+   
+     * )
+     */
+     /**
+     * @Assert\Regex(
+     *     pattern     = "/^[0-9]{8}$/i",
+     *    
+     * )
+     */
+    private $cin;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Application\Sonata\UserBundle\Entity\User", cascade={"persist", "remove"})
+     */
+     protected $user;
+/*
+     ** @ORM\Column(type="string", length=255)
+     */
+   public $firstname;
+     /* public function getFirstName(){
+          return $this->firstname;
+      }
+      
+      public function setFirstName(string $firstname){
+          $this->firstname=$firstname;
+      }*/
+      /*public function setLastName( $lastname) {
+        $this->lastname= $lastname;
+
+        return $this;
+    }*/
+    /*
+     ** @ORM\Column(type="string", length=255)
+     */
+    /*protected $lastname;
+    public function getLastName()
+    {
+        return $this->lastname;
+    }*/
+
     
+   /*
+     ** @ORM\Column(type="string", length=255)
+     */
+    
+
+
+
 
    
 
+   
+   
 
-
+    
+   
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getNom(): ?string
+    public function getAddress()
     {
-        return $this->nom;
+        return $this->address;
     }
 
     /**
-     * @param string $nom
-     * @return string
+     * @param mixed $address
      */
-    public function setNom(string $nom): string
+    public function setAddress($address): void
     {
-        $this->nom = $nom;
-        return $this->nom;
+        $this->address = $address;
     }
 
     /**
      * @return mixed
      */
-    public function getPrenom()
+    public function getCity()
     {
-        return $this->prenom;
+        return $this->city;
     }
 
     /**
-     * @param mixed $prenom
+     * @param mixed $city
      */
-    public function setPrenom($prenom): void
+    public function setCity($city): void
     {
-        $this->prenom = $prenom;
+        $this->city = $city;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCin()
-    {
-        return $this->cin;
-    }
-
-    /**
-     * @param mixed $cin
-     */
-    public function setCin($cin): void
-    {
-        $this->cin = $cin;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAdresse()
-    {
-        return $this->adresse;
-    }
-
-    /**
-     * @param mixed $adresse
-     */
-    public function setAdresse($adresse): void
-    {
-        $this->adresse = $adresse;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getVille()
-    {
-        return $this->ville;
-    }
-
-    /**
-     * @param mixed $ville
-     */
-    public function setVille($ville): void
-    {
-        $this->ville = $ville;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTelephone()
-    {
-        return $this->telephone;
-    }
-
-    /**
-     * @param mixed $telephone
-     */
-    public function setTelephone($telephone): void
-    {
-        $this->telephone = $telephone;
-    }/**
+  /**
  * @return mixed
- */public function getCodePostal()
+ */public function getPostalCode()
 {
-    return $this->codePostal;
+    return $this->postalcode;
 }/**
- * @param mixed $codePostal
- */public function setCodePostal($codePostal): void
+ * @param mixed $postalcode
+ */public function setPostalCode($postalcode): void
 {
-    $this->codePostal = $codePostal;
+    $this->postalcode = $postalcode;
 }
 
-    public function getDateNaissance(): ?\DateTimeInterface
+   /**
+    * *@var postalcode
+    * @var address
+      * @var city
+      *@var cin
+    */
+    public function __construct($address,$city,$postalcode,$cin)
     {
-        return $this->dateNaissance;
-    }
 
-    public function setDateNaissance(?\DateTimeInterface $dateNaissance): self
-    {
-        $this->dateNaissance = $dateNaissance;
+        Parent::__construct();
+        $this->user=new User();
+        $this->address=$address;
+        $this->city=$city;
+        $this->postalcode=$postalcode;
+        $this->cin=$cin;
 
-        return $this;
-    }
-    public function __construct()
-    {
+
         $this->image = new EmbeddedFile();
+
     }
 
     /**
@@ -317,7 +281,47 @@ class Candidat
         return $this;
     }
 
-    public function getCategory(): ?Category
+    public function getDateBirth(): ?\DateTimeInterface
+    {
+        return $this->date_birth;
+    }
+
+    public function setDateBirth(?\DateTimeInterface $date_birth): self
+    {
+        $this->date_birth = $date_birth;
+
+        return $this;
+    }
+
+    public function getCin(): ?string
+    {
+        return $this->cin;
+    }
+
+    public function setCin(string $cin): self
+    {
+        $this->cin = $cin;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /*public function getFirstName(){
+        return $this->getUser()->getFirstName();
+
+    }*/
+   public function getCategory(): ?Category
     {
         return $this->category;
     }
@@ -328,8 +332,6 @@ class Candidat
 
         return $this;
     }
-
-
 
 
 }

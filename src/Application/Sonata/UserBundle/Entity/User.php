@@ -18,7 +18,7 @@ use Sonata\UserBundle\Model\UserInterface;
  * References:
  * @link http://www.doctrine-project.org/projects/orm/2.0/docs/reference/working-with-objects/en
  */
-class User extends BaseUser implements ObjectAclManipulatorInterface
+class User extends BaseUser 
 {
    /**
      * @ORM\Id
@@ -27,49 +27,63 @@ class User extends BaseUser implements ObjectAclManipulatorInterface
      */
     protected $id;
 
-     
+    public function getUsername()
+    {
+        return $this->username;
+    }
     public function getId()
     {
         return $this->id;
     }
-   
+    
+  
+    public function getGenderC(){
+       if ($this->getGender()=='u'){
+           return "Unknown";
+       }elseif($this->getGender()==('f')){
+           return "Female";
+       }else {
+           return "Male";
+       }
+    }
     public static function getGenderList()
 {
     return array(
-        UserInterface::GENDER_UNKNOWN => 'gender_unknown',
-        UserInterface::GENDER_FEMALE  => 'gender_female',
-        UserInterface::GENDER_MALE    => 'gender_male',
+        UserInterface::GENDER_UNKNOWN => 'u',
+        UserInterface::GENDER_FEMALE  => 'f',
+        UserInterface::GENDER_MALE    => 'm',
     );
 }
- /**
-     * @var string
-     *
-     * @ORM\Column(name="firstname", type="string", length=255, nullable=true)
-     */
-    protected $firstname;
 
-    /**
-     *
-     *
-     * @param string $firstname
-     *
-     * @return User
-     */
-    public function setFirstName( $firstname) {
+   public $firstname;
+
+   
+   public function setFirstName( $firstname) {
         $this->firstname= $firstname;
 
         return $this;
     }
-
     /**
-     *
-     *
-     * @return string
+     * @return string|null
      */
+    public function getFirstName()
+    {
+        return $this->firstname;
+    }
+    
+    public $lastname;
+
    
-    public function batchConfigureAcls(
-        OutputInterface $output,
-        AdminInterface $admin,
-        UserSecurityIdentity $securityIdentity = null
-    ){}
+   public function setLastName( $lastname) {
+        $this->lastname= $lastname;
+
+        return $this;
+    }
+    public function getLastName()
+    {
+        return $this->lastname;
+    }
+
+   
+
 }

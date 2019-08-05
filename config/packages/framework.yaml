@@ -3,6 +3,7 @@ framework:
     translator: { fallbacks: ['%locale%'] }
     templating:
         engines: ['twig', 'php']
+    validation: { enable_annotations: true }    
     #csrf_protection: true
     #http_method_override: true
 

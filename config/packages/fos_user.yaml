@@ -10,6 +10,6 @@ fos_user:
     group:
         group_class:   App\Application\Sonata\UserBundle\Entity\Group
         group_manager: sonata.user.orm.group_manager
-
+     
     service:
         user_manager: sonata.user.orm.user_manager
