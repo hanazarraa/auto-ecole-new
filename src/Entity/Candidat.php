@@ -1,6 +1,8 @@
 <?php
 namespace App\Entity;
-
+use App\Application\Sonata\UserBundle\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Entity\File as EmbeddedFile;
@@ -11,6 +13,7 @@ use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Exception\ModelManagerException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
+use Sonata\UserBundle\Model\UserInterface;
 
 /**
  * @ORM\Entity
@@ -19,26 +22,14 @@ use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 
 class Candidat
 {
-    const TYPEPERMIT = [
-        1 => 'A1',
-        2 => 'A',
-        3 => 'B',
-        4 => 'B+E',
-        5 => 'C',
-        6 => 'C+E',
-        7 => 'D',
-        8 => 'D1',
-        9 => 'D+E',
-        10 =>'H'
 
-    ];
 // ...
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()SSS
+     * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
 
 
@@ -49,21 +40,9 @@ class Candidat
     {
         return $this->id;
     }
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nom", type="string",nullable=true)
-     */
-    private $nom;
-    /**
-     * @var string
-     * @ORM\Column(name="prenom", type="string",nullable=true)
-     */
-    private $prenom;
-    /**
-     * @var int
-     * @ORM\Column(name="cin",nullable=true)
-     */
+   
+   
+   
     private $cin;
     /**
      * @var string
@@ -77,7 +56,7 @@ class Candidat
     private $ville;
     /**
      * @var int
-     * @ORM\Column(name="telephone",nullable=true)
+     * @ORM\Column(name="telephone",nullable=true,length=8)
      */
     private $telephone;
     /**
@@ -86,10 +65,7 @@ class Candidat
      */
     private $codePostal;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     */
-    private $dateNaissance;
+   
     /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      *
@@ -113,13 +89,7 @@ class Candidat
      */
     private $imageSize;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     *
-     * @var \DateTime
-     */
-    private $updatedAt;
-
+    
     /**
      * @ORM\Column(type="integer",nullable=true)
      */
@@ -130,6 +100,18 @@ class Candidat
      */
     private $category;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Application\Sonata\UserBundle\Entity\User", inversedBy="candidats")
+     */
+    private $User;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Seance", inversedBy="seances")
+     */
+    private $seance;
+      
+      
+      
     
 
    
@@ -137,43 +119,12 @@ class Candidat
 
 
 
-    /**
-     * @return string
-     */
-    public function getNom(): ?string
-    {
-        return $this->nom;
-    }
+   
 
-    /**
-     * @param string $nom
-     * @return string
-     */
-    public function setNom(string $nom): string
-    {
-        $this->nom = $nom;
-        return $this->nom;
-    }
+   
+   
 
-    /**
-     * @return mixed
-     */
-    public function getPrenom()
-    {
-        return $this->prenom;
-    }
-
-    /**
-     * @param mixed $prenom
-     */
-    public function setPrenom($prenom): void
-    {
-        $this->prenom = $prenom;
-    }
-
-    /**
-     * @return mixed
-     */
+    
     public function getCin()
     {
         return $this->cin;
@@ -219,21 +170,7 @@ class Candidat
         $this->ville = $ville;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTelephone()
-    {
-        return $this->telephone;
-    }
-
-    /**
-     * @param mixed $telephone
-     */
-    public function setTelephone($telephone): void
-    {
-        $this->telephone = $telephone;
-    }/**
+  /**
  * @return mixed
  */public function getCodePostal()
 {
@@ -245,20 +182,12 @@ class Candidat
     $this->codePostal = $codePostal;
 }
 
-    public function getDateNaissance(): ?\DateTimeInterface
-    {
-        return $this->dateNaissance;
-    }
-
-    public function setDateNaissance(?\DateTimeInterface $dateNaissance): self
-    {
-        $this->dateNaissance = $dateNaissance;
-
-        return $this;
-    }
+   
     public function __construct()
     {
         $this->image = new EmbeddedFile();
+        $this->User = new ArrayCollection();
+        $this->seance = new ArrayCollection();
     }
 
     /**
@@ -317,7 +246,59 @@ class Candidat
         return $this;
     }
 
-    public function getCategory(): ?Category
+    /**
+     * @return Collection|User[]
+     */
+    public function getUser(): Collection
+    {
+        return $this->User;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->User->contains($user)) {
+            $this->User[] = $user;
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->User->contains($user)) {
+            $this->User->removeElement($user);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Seance[]
+     */
+    public function getSeance(): Collection
+    {
+        return $this->seance;
+    }
+
+    public function addSeance(Seance $seance): self
+    {
+        if (!$this->seance->contains($seance)) {
+            $this->seance[] = $seance;
+        }
+
+        return $this;
+    }
+
+    public function removeSeance(Seance $seance): self
+    {
+        if ($this->seance->contains($seance)) {
+            $this->seance->removeElement($seance);
+        }
+
+        return $this;
+    }
+
+   /* public function getCategory(): ?Category
     {
         return $this->category;
     }
@@ -327,7 +308,7 @@ class Candidat
         $this->category = $category;
 
         return $this;
-    }
+    }*/
 
 
 

@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Application\Sonata\UserBundle\Entity;
+use App\Entity\Candidat;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Sonata\AdminBundle\Util\ObjectAclManipulatorInterface;
 use Sonata\AdminBundle\Admin\AdminInterface;
@@ -49,6 +52,17 @@ class User extends BaseUser implements ObjectAclManipulatorInterface
     protected $firstname;
 
     /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Candidat", mappedBy="User")
+     */
+    private $candidats;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->candidats = new ArrayCollection();
+    }
+
+    /**
      *
      *
      * @param string $firstname
@@ -72,4 +86,32 @@ class User extends BaseUser implements ObjectAclManipulatorInterface
         AdminInterface $admin,
         UserSecurityIdentity $securityIdentity = null
     ){}
+
+    /**
+     * @return Collection|Candidat[]
+     */
+    public function getCandidats(): Collection
+    {
+        return $this->candidats;
+    }
+
+    public function addCandidat(Candidat $candidat): self
+    {
+        if (!$this->candidats->contains($candidat)) {
+            $this->candidats[] = $candidat;
+            $candidat->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCandidat(Candidat $candidat): self
+    {
+        if ($this->candidats->contains($candidat)) {
+            $this->candidats->removeElement($candidat);
+            $candidat->removeUser($this);
+        }
+
+        return $this;
+    }
 }

@@ -4,13 +4,16 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 
+
 services:
-    admin_success_handler:
-        class: Sonata\UserBundle\Services
-        arguments: [ '@service_container' ]
     security.acl.permission.map:
       class: Sonata\AdminBundle\Security\Acl\Permission\AdminPermissionMap
-    
+    admin.moniteurrrgggg:
+        class: App\Admin\MoniteurAdmin
+        arguments: [~, App\Entity\Moniteur, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: moniteur }
+
     admin.candidat:
         class: App\Admin\CandidatAdmin
         arguments: [~, App\Entity\Candidat, ~]
@@ -21,11 +24,17 @@ services:
         arguments: [~, App\Entity\Category, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: Category }
-    admin.moniteur:
-        class: App\Admin\MoniteurAdmin
-        arguments: [~, App\Entity\Moniteur, ~]
+    admin.vehicule:
+        class: App\Admin\VehiculeAdmin
+        arguments: [~, App\Entity\Vehicule, ~]
         tags:
-            - { name: sonata.admin, manager_type: orm, label: Moniteur }
+            - { name: sonata.admin, manager_type: orm, label: Vehicule }
+    admin.Seance:
+        class: App\Admin\SeanceAdmin
+        arguments: [~, App\Entity\Seance, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Seance }
+          
     # default configuration for services in *this* file
     
     _defaults:
@@ -49,3 +58,4 @@ services:
 parameters:
     locale: 'en'
     sonata.admin.security.mask.builder.class: Sonata\AdminBundle\Security\Acl\Permission\MaskBuilder
+    sonata.media.admin.media.controller: SilasJoisten\Sonata\MultiUploadBundle\Controller\MultiUploadController
