@@ -1,10 +1,8 @@
 <?php
 namespace App\Admin;
 use App\Entity\Category;
+use App\Entity\SeanceCode;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Sonata\AdminBundle\Form\Type\ModelType;
-
-
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -16,7 +14,12 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\Candidat;
 use App\Application\Sonata\UserBundle\Entity\User;
-
+use App\Application\Sonata\UserBundle\Admin\UserAdmin as UserAdmin;
+use App\Form\SeanceConduiteType;
+use Sonata\AdminBundle\Form\Type\AdminType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+//use App\Entity\SeanceConduite;
+//use App\Admin\SeanceConduiteAdmin;
 
 final class CandidatAdmin extends AbstractAdmin
 {
@@ -24,80 +27,75 @@ final class CandidatAdmin extends AbstractAdmin
      * @param FormMapper $formMapper
      */
     protected function configureFormFields(FormMapper $formMapper)
-    {
+    {   //UserAdmin::configureFormFields($formMapper);
+       // $formMapper->end();
         $formMapper
-            
-            ->with('Informations du Candidat', ['class' => 'col-md-5'])
-            //->add('lastname', TextType::class)
-           // ->add('firstname', EntityType::class,[
-             //   'class' =>User::class,])
-            
-            //->add('username',TextType::class)
-           // ->add('cin', TextType::class)
+            ->tab('Candidat')
+            ->with('Content', ['class' => 'col-md-9'])
+           /* ->add('nom', TextType::class)
+            ->add('prenom', TextType::class)
+            ->add('gender', ChoiceType::class, [
+                'choices'  => Candidat::getGenderList()]
+            )
+            ->add('date_naissance', DateType::class, [
+                    'widget' => 'single_text',
+                    // this is actually the default format for single_text
+                    'format' => 'yyyy-MM-dd',]
+            )*/
+            ->add('cin', TextType::class)
             ->add('address', TextType::class)
             ->add('postalcode', TextType::class)
             ->add('city', TextType::class)
-            //->add('phone', TextType::class)
-            ->add('ImageFile', FileType::class, ['required' => true])
+           
+
             ->end()
-            ->with('Category du permis',['class' => 'col-md-5'])
-            ->add('category',ModelType::class,[
-                'required' => true,
-                'expanded' => true,
-                'btn_add'=>'Add',
-              
+            ->with('Content', ['class' => 'col-md-9'])
+           /* ->add('Category',EntityType::class,[
+                'class' =>Category::class,
+                'choice_label'=>'name',
+            ])*/
+            ->add('ImageFile', FileType::class, ['required' => true])
+            ->add('SeanceConduite', CollectionType::class, [
+                'by_reference' => false, // Use this because of reasons
+                'allow_add' => true, // True if you want allow adding new entries to the collection
+                'allow_delete' => true, // True if you want to allow deleting entries
+                'prototype' => true, // True if you want to use a custom form type
+                
+                'entry_type' =>SeanceConduiteType::class   // Form type for the Entity that is being attached to the object
             ])
             ->end()
+            ->end()
+            ->tab('User')
             
-            
-            ->with('Informations Utilisateur',['class' => 'col-md-5'])
-            ->add('user',ModelType::class,
-                
-            ['property' => 'username','btn_add'=>'Add new'])
-            
-            //->add('user.username',TextType::class,['required'=>true])
-
-            
-            
+            ->add('user',AdminType::class)
+            ->end()
+            ->end();
+           
            
             
-            ->end();
-
-
     }
-
-
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $datagridMapper->//add('cin')
-                       add('user.firstname')
-                       ->add('user.lastname')
-                       ->add('user.username');
-
+        $datagridMapper->add('cin');
     }
-
     protected function configureListFields(ListMapper $listMapper)
     {
-        $listMapper
-            ->addIdentifier('user.username',null,['label'=>'User Name'])
-            ->addIdentifier('user.lastname',null,['label'=>'Last Name'])
-            ->addIdentifier('user.firstname',null,['label'=>'First Name'])
-            ->addIdentifier('user.gender',null,['label'=>'Gender'])
-          //  ->addIdentifier('cin')
+        UserAdmin::configureListFields($listMapper);
+        $listMapper->//addIdentifier('nom')
+            //->addIdentifier('prenom')
+            addIdentifier('cin')
             ->addIdentifier('address')
             ->addIdentifier('postalcode')
             ->addIdentifier('city')
-           ->addIdentifier('user.phone',null,['label'=>'Phone Number'])
-           ->addIdentifier('user.date_of_birth','date',['label' => 'Date of Birth'])
-           // ->addIdentifier('date_birth')
-            ->addIdentifier('category.name',null,['label'=>'Category'])
-            //->addIdentifier('Category')
-            //->add('ImageName')
-            ->add('ImageFile')
-            
+            //->addIdentifier('telephone')
+            //->addIdentifier('dateNaissance')
+           // ->addIdentifier('seance')
+            ->addIdentifier('category.name')
+            ->addIdentifier('Category')
+           // ->add('ImageName')
+           // ->add('ImageFile')
+          //  ->addIdentifier('gender')
             ;
-
     }
    
-
 }

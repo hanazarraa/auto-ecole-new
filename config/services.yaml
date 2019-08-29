@@ -6,29 +6,88 @@
 
 
 services:
+    
+    admin.calendrier:
+        class: App\Admin\CalendarAdmin
+        arguments: [admin.calendrier, App\Entity\SeanceConduite, App\Controller\CalendrierController:listAction]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Calendrier, group: Calendrier, on_top: true }
+        
+        
+    
+
+    validator.pcDisponibles:
+        
+        class: App\Application\Sonata\UserBundle\Validator\Constraints\PcNonDisponibleValidator
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            - { name: validator.constraint_validator, alias: Pc_no_availables }
     security.acl.permission.map:
       class: Sonata\AdminBundle\Security\Acl\Permission\AdminPermissionMap
+    admin.vehicules:
+        class: App\Admin\VehiculeAdmin
+        arguments: [~ , App\Entity\Vehicule , ~]
+        tags:
+             - { name: sonata.admin, manager_type: orm, label: vehicule }
     admin.moniteurrrgggg:
         class: App\Admin\MoniteurAdmin
         arguments: [~, App\Entity\Moniteur, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: moniteur }
-
+    admin.block.service.stats:
+        class: App\Block\Service\StatsBlockService
+        arguments:
+            - "admin.block.service.stats"
+            - "@templating"
+            - "@doctrine.orm.entity_manager"
+        public: true
+        tags:
+        - {name: "sonata.block"}        
+    sonata.block.service.text:
+        class: Sonata\BlockBundle\Block\Service\TextBlockService
+        arguments:
+            - ~
+            - '@templating'
+        tags:
+            - { name: sonata.block }
     admin.candidat:
         class: App\Admin\CandidatAdmin
         arguments: [~, App\Entity\Candidat, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: Candidats }
+    admin.parametre:
+        class: App\Admin\parametreAdmin
+        arguments: [~, App\Entity\Parametres, ~]
+        tags:
+             - { name: sonata.admin, manager_type: orm, label: Parametres }        
     admin.category:
         class: App\Admin\CategoryAdmin
+        
         arguments: [~, App\Entity\Category, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: Categories }
-    
+      
+    admin.pc:
+        
+        class: App\Admin\PcAdmin
+        
+        arguments:
+         - ~ 
+         - App\Entity\Pc
+         - ~
+         - doctrine.orm.default_entity_manager     
+        tags:
+           - { name: sonata.admin, manager_type: orm, label: Pcs }  
+    admin.seancesCodes:
+        class: App\Admin\SeanceCodeAdmin
+        arguments: [~, App\Entity\SeanceCode, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Seances Code }
+   
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-
+        public: false
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
@@ -41,6 +100,10 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
+    
+   
+
+     
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 parameters:

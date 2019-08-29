@@ -22,19 +22,19 @@ class CandidatRepository extends ServiceEntityRepository
     // /**
     //  * @return Candidat[] Returns an array of Candidat objects
     //  */
-    /*
-    public function findByExampleField($value)
+    
+    public function findByseancecode($value)
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
+           ->innerJoin('c.seancecode','sc')
+            ->andWhere("sc.id = :id")
+            ->setParameter('id', $value)
+           
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+    
 
     /*
     public function findOneBySomeField($value): ?Candidat

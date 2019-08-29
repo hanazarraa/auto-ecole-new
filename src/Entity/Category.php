@@ -44,23 +44,23 @@ class Category
     private $moniteurs;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Candidat", mappedBy="Category")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Candidat", mappedBy="categories")
      */
     private $candidats;
 
-    
-
     public function __construct()
     {
-        $this->moniteurs = new ArrayCollection();
         $this->candidats = new ArrayCollection();
     }
 
+  
+    
 
-    public function getCategory()
-    {
-        return $this->category;
-    }
+    
+
+   
+
+   
 
     /**
      * @param string $name
@@ -94,8 +94,34 @@ class Category
     }
 
     /**
-     * @return Collection|Moniteurs[]
+     * @return Collection|Candidat[]
      */
+    public function getCandidats(): Collection
+    {
+        return $this->candidats;
+    }
+
+    public function addCandidat(Candidat $candidat): self
+    {
+        if (!$this->candidats->contains($candidat)) {
+            $this->candidats[] = $candidat;
+            $candidat->addCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCandidat(Candidat $candidat): self
+    {
+        if ($this->candidats->contains($candidat)) {
+            $this->candidats->removeElement($candidat);
+            $candidat->removeCategory($this);
+        }
+
+        return $this;
+    }
+
+   
    /* public function getMoniteur(): Collection
     {
         return $this->moniteur;
@@ -124,9 +150,7 @@ class Category
         return $this;
     }*/
 
-    /**
-     * @return Collection|Candidat[]
-     */
+    
    /* public function getCandidat(): Collection
     {
         return $this->candidat;
@@ -155,9 +179,7 @@ class Category
         return $this;
     }*/
 
-    /**
-     * @return Collection|Candidat[]
-     */
+    
  /*   public function getCandidats(): Collection
     {
         return $this->candidats;

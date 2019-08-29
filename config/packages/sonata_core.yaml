@@ -1,4 +1,8 @@
 sonata_core:
+    flashmessage:
+        warning:
+            types:
+                - { type: sonata_warning, domain: SonataAdminBundle }
     form:
         mapping:
             enabled: false

@@ -26,15 +26,26 @@ class User extends BaseUser
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
-    public function getUsername()
-    {
-        return $this->username;
-    }
+     
+   
+     /**
+     * 
+     * @ORM\Column(type="string",name="username",length=255)
+     *
+     */
+    protected $username;
+ /**
+     * 
+     * @ORM\Column(type="string",name="email",length=255)
+     *
+     */
+    protected $email;
+    
     public function getId()
     {
         return $this->id;
     }
+    
     
   
     public function getGenderC(){

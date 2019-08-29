@@ -66,7 +66,7 @@ class Moniteur
     private $passport;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="moniteur")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="moniteur", cascade={"persist", "remove"})
      */
     private $category;
 
@@ -76,13 +76,46 @@ class Moniteur
     private $user;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Vehicule", mappedBy="moniteur")
+     * @ORM\OneToMany(targetEntity="App\Entity\SeanceConduite", mappedBy="Moniteur", cascade={"persist", "remove"})
      */
-    private $vehicules;
+    private $seancesconduite;
+
+  
 
     public function __construct()
     {
-        $this->vehicules = new ArrayCollection();
+        $this->seancesconduite = new ArrayCollection();
+    }
+    /**
+     * @return Collection|SeanceConduite[]|null
+     */
+    public function getSeancesConduite()
+    {
+        return $this->seancesconduite;
+    }
+
+    public function addSeancesConduite(SeanceConduite $seancesconduite): self
+    {
+        if (!$this->seancesconduite->contains($seancesconduite)) {
+            $this->seancesconduite[] = $seancesconduite;
+            $seancesconduite->setMoniteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeancesConduite(SeancesConduite $seancesconduite): self
+    {
+        if ($this->seancesconduite->contains($seancesconduite)) {
+            $this->seancesconduite->removeElement($seancesconduite);
+            // set the owning side to null (unless already changed)
+            if ($seancesconduite->getVehicule() === $this) {
+                $seancesconduite->setVehicule(null);
+            }
+        }
+
+        return $this;
+    
     }
 
 
@@ -212,36 +245,12 @@ class Moniteur
         return $this;
     }
 
-    /**
-     * @return Collection|Vehicule[]
-     */
-    public function getVehicules(): Collection
-    {
-        return $this->vehicules;
-    }
+    
+    
 
-    public function addVehicule(Vehicule $vehicule): self
-    {
-        if (!$this->vehicules->contains($vehicule)) {
-            $this->vehicules[] = $vehicule;
-            $vehicule->setMoniteur($this);
-        }
+   
 
-        return $this;
-    }
-
-    public function removeVehicule(Vehicule $vehicule): self
-    {
-        if ($this->vehicules->contains($vehicule)) {
-            $this->vehicules->removeElement($vehicule);
-            // set the owning side to null (unless already changed)
-            if ($vehicule->getMoniteur() === $this) {
-                $vehicule->setMoniteur(null);
-            }
-        }
-
-        return $this;
-    }
+   
 
 
 }

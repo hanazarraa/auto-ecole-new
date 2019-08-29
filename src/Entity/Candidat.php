@@ -1,6 +1,8 @@
 <?php
 namespace App\Entity;
 use App\Application\Sonata\UserBundle\Entity\User as User;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Entity\File as EmbeddedFile;
@@ -18,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @Vich\Uploadable
  */
 
-class Candidat
+class Candidat 
 {
     
 // ...
@@ -30,9 +32,7 @@ class Candidat
     protected $id;
 
   
-    /**
-     * @return mixed
-     */
+   
     public function getId()
     {
         return $this->id;
@@ -42,7 +42,6 @@ class Candidat
    
     
     /**
-     * @var string
      * @ORM\Column(name="address", type="string",nullable=true)
      */
     private $address;
@@ -88,40 +87,28 @@ class Candidat
      */
     private $typePermit;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="candidats")
-     */
-    private $category;
-
    
-    /**
-     * @ORM\Column(type="string", length=8,name="cin")
-     * /
-     
-      */
-      /** 
-     * @Assert\Length(
-     *      min = 8,
-     *      max = 8,
-   
-     * )
-     */
+    
      /**
-     * @Assert\Regex(
-     *     pattern     = "/^[0-9]{8}$/i",
-     *    
-     * )
+     * @ORM\Column(type="string",nullable=true,name="cin")
      */
-    private $cin;
-
+    protected $cin;
+    public function to_string(){
+        return $this->cin;
+    }
     /**
      * @ORM\OneToOne(targetEntity="App\Application\Sonata\UserBundle\Entity\User", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="user", referencedColumnName="id", nullable=True)
      */
-     protected $user;
-/*
+    protected $user ;/*
      ** @ORM\Column(type="string", length=255)
      */
    public $firstname;
+
+   /**
+    * @ORM\ManyToMany(targetEntity="App\Entity\Category", inversedBy="candidats")
+    */
+   private $categories;
      /* public function getFirstName(){
           return $this->firstname;
       }
@@ -149,9 +136,16 @@ class Candidat
      */
     
 
-
-
-
+    public static function getGenderList()
+    {
+        return array(
+            UserInterface::GENDER_UNKNOWN => 'u',
+            UserInterface::GENDER_FEMALE  => 'f',
+            UserInterface::GENDER_MALE    => 'm',
+        );
+    }
+   
+   
    
 
    
@@ -209,19 +203,23 @@ class Candidat
     * @var address
       * @var city
       *@var cin
+      *@var user
     */
-    public function __construct($address,$city,$postalcode,$cin)
+
+    public function __construct($address,$city,$postalcode,$cin,$user)
     {
 
         Parent::__construct();
-        $this->user=new User();
+        $this->user=$user;
         $this->address=$address;
         $this->city=$city;
         $this->postalcode=$postalcode;
         $this->cin=$cin;
 
-
+        
         $this->image = new EmbeddedFile();
+        $this->categories = new ArrayCollection();
+        $this->SeanceConduite = new ArrayCollection();
 
     }
 
@@ -254,6 +252,26 @@ class Candidat
     public function getImageName(): ?string
     {
         return $this->imageName;
+    }
+    protected $username;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\SeanceCode", inversedBy="candidats", cascade={"persist", "remove"})
+     */
+    private $seancecode;
+     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\SeanceConduite", mappedBy="candidat", cascade={"persist", "remove"})
+     */
+    private $SeanceConduite;
+
+
+  
+  
+    /**
+     * @return string|null
+     */
+    public function getUserName(){
+        return $this->username;
     }
 
     /**
@@ -312,7 +330,7 @@ class Candidat
 
     public function setUser(?User $user): self
     {
-        $this->user = $user;
+        $this->user= $user;
 
         return $this;
     }
@@ -321,17 +339,88 @@ class Candidat
         return $this->getUser()->getFirstName();
 
     }*/
-   public function getCategory(): ?Category
+  
+
+    /**
+     * @return Collection|Category[]|null
+     */
+    public function getCategories(): Collection
     {
-        return $this->category;
+        return $this->categories;
     }
 
-    public function setCategory(?Category $category): self
+    public function addCategory(Category $category): self
     {
-        $this->category = $category;
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+        }
 
         return $this;
     }
 
+    public function removeCategory(Category $category): self
+    {
+        if ($this->categories->contains($category)) {
+            $this->categories->removeElement($category);
+        }
+
+        return $this;
+    }
+
+  
+    /*public function __toString()
+    {
+        return $this->cin;
+    }*/
+    public function getCandidat(){
+        return $this;
+    }   
+
+    public function getSeancecode(): ?SeanceCode
+    {
+        return $this->seancecode;
+    }
+
+    public function setSeancecode(?SeanceCode $seancecode): self
+    {
+        $this->seancecode = $seancecode;
+
+        return $this;
+    }
+
+ /**
+     * @return Collection|SeanceConduite[]|null
+     */
+    public function getSeanceConduite()
+    {
+        return $this->SeanceConduite;
+    }
+
+    public function addSeanceConduite(SeanceConduite $seanceConduite): self
+    {
+        if (!$this->SeanceConduite->contains($seanceConduite)) {
+            $this->SeanceConduite[] = $seanceConduite;
+            $seanceConduite->setCandidat($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeanceConduite(SeanceConduite $seanceConduite): self
+    {
+        if ($this->SeanceConduite->contains($seanceConduite)) {
+            $this->SeanceConduite->removeElement($seanceConduite);
+            // set the owning side to null (unless already changed)
+            if ($seanceConduite->getCandidat() === $this) {
+                $seanceConduite->setCandidat(null);
+            }
+        }
+
+        return $this;
+    }
+
+   
+      
+   
 
 }

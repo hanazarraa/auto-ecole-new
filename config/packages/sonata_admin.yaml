@@ -1,5 +1,19 @@
  
 sonata_admin:
+    options:
+        html5_validate:  true     # enable or disable html5 form validation
+        confirm_exit:    true     # enable or disable a confirmation before navigating away
+        js_debug:        false    # enable or disable to show javascript debug messages
+        use_select2:     true     # enable or disable usage of the Select2 jQuery library
+        use_icheck:      true     # enable or disable usage of the iCheck library
+        use_bootlint:    false    # enable or disable usage of Bootlint
+        use_stickyforms: true     # enable or disable the floating buttons
+        form_type:       standard # can also be 'horizontal'
+
+    templates:
+        
+        edit:              '@SonataAdmin/CRUD/edit.html.twig'
+        tab_menu_template: '@SonataAdmin/Core/tab_menu_template.html.twig'
     security:
         handler: sonata.admin.security.handler.acl
 
@@ -19,16 +33,29 @@ sonata_admin:
         admin_permissions: [CREATE, LIST, DELETE, UNDELETE, EXPORT, OPERATOR, MASTER]
 
         # permission related to the objects
-        object_permissions: [VIEW, EDIT, DELETE, UNDELETE, OPERATOR, MASTER, OWNER]    
+        object_permissions: [VIEW, EDIT, DELETE, UNDELETE, OPERATOR, MASTER, OWNER, CREATE]    
         
     title: 'Mon Auto Ecole'
     dashboard:
+        groups:
+            
+
         blocks:
-            - { type: sonata.admin.block.admin_list, position: left }
+            
+           
+            - { type: sonata.admin.block.admin_list, position: center , roles: ['ROLE_ADMIN']}
+            
+         
 sonata_block:
     blocks:
         sonata.admin.block.admin_list:
             contexts: [admin]
+        sonata.admin.block.search_result:
+            contexts: [admin]
+        sonata.block.service.text: 
+        admin.block.service.calendar: ~
+            
+          
         
        
 sonata_user:
