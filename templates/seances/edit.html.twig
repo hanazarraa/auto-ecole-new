@@ -1,0 +1,8 @@
+<div class="row form-group">
+    {{ form_label(form.name, null, {'label_attr': {'class': 'col-md-2'}}) }}
+    <div class="col col-md-10">{{ form_widget(form.name) }}</div>
+    <div class="form_errors col-md-12">
+	    {{ form_errors(form.name) }}
+    </div>
+</div>
+
